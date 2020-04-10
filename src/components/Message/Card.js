@@ -16,7 +16,9 @@ const Card = ({ content, sendMessage, onImageLoaded }) => {
   // Need to check if buttons is null before rendering the button html.
   return (
     <div className={'RecastAppCard CaiAppCard'}>
-      {imageUrl && <img src={imageUrl} onLoad={onImageLoaded} className='RecastAppCard--img CaiAppCard--img' />}
+      {imageUrl && (
+        <img src={imageUrl} onLoad={onImageLoaded} className='RecastAppCard--img CaiAppCard--img' />
+      )}
 
       <div className='RecastAppCard--text CaiAppCard--text'>
         <p className='RecastAppCard--text-title CaiAppCard--text-title'>{truncate(title, 80)}</p>

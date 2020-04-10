@@ -35,3 +35,9 @@ export const addBotMessage = createAction('ADD_BOT_MESSAGE', (messages, data) =>
 }))
 
 export const addUserMessage = createAction('ADD_USER_MESSAGE')
+
+export const addMessageInfo = createAction('ADD_MESSAGE_INFO')
+
+export const dropFileAccept = createAction('DROP_FILE_ACCEPTED')
+
+export const dropFileReject = createAction('DROP_FILE_REJECTED')

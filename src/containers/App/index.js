@@ -116,7 +116,7 @@ class App extends Component {
     this.props.removeAllMessages()
   }
 
-/*
+  /*
   resetMessages = () => {
     this.props.removeAllMessages()
     if (this.props.preferences.welcomeMessage) {

@@ -16,7 +16,10 @@ class Live extends Component {
     if (props.messages.length !== state.msgLength) {
       // only show the busy indicate if the count increase.
       // (on error the cancel will remove the message, so we do not want the busy indicator)
-      return { showTyping: props.messages.length > state.msgLength, msgLength: props.messages.length }
+      return {
+        showTyping: props.messages.length > state.msgLength,
+        msgLength: props.messages.length,
+      }
     }
     return null
   }
@@ -80,6 +83,11 @@ class Live extends Component {
       containerMessagesStyle,
       showInfo,
       onClickShowInfo,
+      dropped,
+      dndFiles,
+      dndMessage,
+      dropFileAccepted,
+      dropFileRejected,
     } = this.props
     const { showTyping } = this.state
     const lastMessage = messages.slice(-1)[0]
@@ -121,6 +129,11 @@ class Live extends Component {
               showInfo={showInfo}
               onClickShowInfo={onClickShowInfo}
               error={message.error}
+              dropFileAccepted={dropFileAccepted}
+              dropFileRejected={dropFileRejected}
+              dropped={dropped}
+              dndFiles={dndFiles}
+              dndMessage={dndMessage}
             />
           ))}
 
@@ -144,6 +157,11 @@ Live.propTypes = {
   onRetrySendMessage: PropTypes.func,
   onCancelSendMessage: PropTypes.func,
   showInfo: PropTypes.bool,
+  dropped: PropTypes.bool.isRequired,
+  dndFiles: PropTypes.array.isRequired,
+  dndMessage: PropTypes.string.isRequired,
+  dropFileAccepted: PropTypes.func.isRequired,
+  dropFileRejected: PropTypes.func.isRequired,
 }
 
 export default Live

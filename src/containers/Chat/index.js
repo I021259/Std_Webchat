@@ -12,6 +12,9 @@ import {
   removeAllMessages,
   addBotMessage,
   addUserMessage,
+  addMessageInfo,
+  dropFileAccept,
+  dropFileReject,
 } from 'actions/messages'
 
 import Header from 'components/Header'
@@ -35,6 +38,10 @@ const WRONG_MEMORY_FORMAT
     conversationId: state.conversation.conversationId,
     lastMessageId: state.conversation.lastMessageId,
     messages: state.messages,
+    showInfo: true,
+    dropped: state.uploadFile.dropped,
+    dndFiles: state.uploadFile.dndFiles,
+    dndMessage: state.uploadFile.dndMessage,
     }),
   {
   postMessage,
@@ -43,6 +50,9 @@ const WRONG_MEMORY_FORMAT
   removeAllMessages,
   addUserMessage,
   addBotMessage,
+  addMessageInfo,
+  dropFileAccept,
+  dropFileReject,
   },
 )
 class Chat extends Component {
@@ -316,6 +326,24 @@ class Chat extends Component {
     this.sendMessage({ type: 'text', content: I18n.t('message.reset') }, null)
   }
 
+  onClickShowInfo = message => {
+    const { addMessageInfo } = this.props
+    const { msgData } = this.props
+    console.log('Message :', message)
+    addMessageInfo(message)
+  }
+
+  dropFileAccepted = dndFiles => {
+    //
+    this.props.addBotMessage([{ type: 'text', content: 'File Dropped', error: false }])
+    this.props.dropFileAccept(dndFiles)
+  }
+
+  dropFileRejected = () => {
+    //
+    this.props.dropFileReject()
+  }
+
   render () {
     const {
       closeWebchat,
@@ -332,6 +360,9 @@ class Chat extends Component {
       logoStyle,
       show,
       enableHistoryInput,
+      dropped,
+      dndFiles,
+      dndMessage,
     } = this.props
     const { showSlogan, messages, inputHeight } = this.state
 
@@ -422,6 +453,8 @@ Chat.propTypes = {
   show: PropTypes.bool,
   enableHistoryInput: PropTypes.bool,
   defaultMessageDelay: PropTypes.number,
+  dropFileAccept: PropTypes.func,
+  dropFileReject: PropTypes.func,
 }
 
 export default Chat

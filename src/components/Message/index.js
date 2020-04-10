@@ -27,6 +27,11 @@ class Message extends Component {
       onCancelSendMessage,
       showInfo,
       onClickShowInfo,
+      dropped,
+      dndFiles,
+      dndMessage,
+      dropFileAccepted,
+      dropFileRejected,
     } = this.props
     const {
       botPicture,
@@ -72,6 +77,16 @@ class Message extends Component {
           )}
 
           {type === 'text' && <Text {...messageProps} />}
+          {type === 'text' && (
+            <Text
+              {...messageProps}
+              dropFileAccepted={dropFileAccepted}
+              dropFileRejected={dropFileRejected}
+              dropped={dropped}
+              dndFiles={dndFiles}
+              dndMessage={dndMessage}
+            />
+          )}
 
           {type === 'picture' && <Picture {...messageProps} />}
 

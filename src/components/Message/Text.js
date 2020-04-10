@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import sanitizeHtml from 'sanitize-html-react'
 import ReactMarkdown from 'react-markdown'
 
+import DropArea from './DropArea'
+
 import { truncate } from 'helpers'
+
+import { I18n } from 'react-redux-i18n'
 
 import './style.scss'
 
@@ -27,7 +31,16 @@ const allowedMarkdownTypes = [
   'tableCell',
 ]
 
-const Text = ({ content, style, isMarkdown }) => {
+const Text = ({
+  content,
+  style,
+  isMarkdown,
+  dropFileAccepted,
+  dropFileRejected,
+  dropped,
+  dndFiles,
+  dndMessage,
+}) => {
   let respond
 
   if (typeof isMarkdown !== 'boolean') {
@@ -64,8 +77,12 @@ const Text = ({ content, style, isMarkdown }) => {
 
   // Markdown links need to open in new window.
   // BCP: https://support.wdf.sap.corp/sap/support/message/1980408289
-  const LinkRenderer = (props) => {
-    return <a href={props.href} target='_blank' rel='noopener noreferrer'>{props.children}</a>
+  const LinkRenderer = props => {
+    return (
+      <a href={props.href} target='_blank' rel='noopener noreferrer'>
+        {props.children}
+      </a>
+    )
   }
 
   return (
@@ -79,6 +96,18 @@ const Text = ({ content, style, isMarkdown }) => {
       ) : (
         compiledResponse
       )}
+
+      <div>
+        {content === I18n.t('triggerPhrase.dropArea') && (
+          <DropArea
+            dropFileAccepted={dropFileAccepted}
+            dropFileRejected={dropFileRejected}
+            dropped={dropped}
+            dndFiles={dndFiles}
+            dndMessage={dndMessage}
+          />
+        )}
+      </div>
     </div>
   )
 }
