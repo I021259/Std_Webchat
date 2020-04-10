@@ -9,6 +9,7 @@ import {
   postMessage,
   pollMessages,
   removeMessage,
+  removeAllMessages,
   addBotMessage,
   addUserMessage,
 } from 'actions/messages'
@@ -37,6 +38,7 @@ const WRONG_MEMORY_FORMAT
   postMessage,
   pollMessages,
   removeMessage,
+  removeAllMessages,
   addUserMessage,
   addBotMessage,
   },
@@ -305,9 +307,16 @@ class Chat extends Component {
     this._isPolling = false
   }
 
+  resetWebchat = () => {
+    console.log(this)
+    this.props.removeAllMessages()
+    this.sendMessage({ type: 'text', content: 'resetdata' })
+  }
+
   render () {
     const {
       closeWebchat,
+      resetWebchat,
       preferences,
       showInfo,
       onClickShowInfo,
@@ -335,6 +344,7 @@ class Chat extends Component {
         ) : (
           <Header
             closeWebchat={closeWebchat}
+            resetWebchat={this.resetWebchat}
             preferences={preferences}
             key='header'
             logoStyle={logoStyle}
@@ -389,6 +399,7 @@ class Chat extends Component {
 Chat.propTypes = {
   postMessage: PropTypes.func,
   closeWebchat: PropTypes.func,
+  resetWebchat: PropTypes.func,
   pollMessages: PropTypes.func,
   chatId: PropTypes.string,
   channelId: PropTypes.string,

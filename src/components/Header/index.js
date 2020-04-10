@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import './style.scss'
 
-const Header = ({ closeWebchat, preferences, logoStyle }) => (
+const Header = ({ closeWebchat, resetWebchat, preferences, logoStyle }) => (
   <div
     className='RecastAppHeader CaiAppHeader'
     style={{
@@ -15,6 +15,10 @@ const Header = ({ closeWebchat, preferences, logoStyle }) => (
 
     <div className='RecastAppHeader--title CaiAppHeader--title'>{preferences.headerTitle}</div>
 
+    <div className="RecstAppHeader--btn" onClick={ resetWebchat }>
+      <img src="./img/myRest2.png" />
+    </div>
+
     <div className='RecastAppHeader--btn CaiAppHeader--btn' onClick={closeWebchat}>
       <img src='https://cdn.cai.tools.sap/webchat/close.svg' />
     </div>
@@ -23,6 +27,7 @@ const Header = ({ closeWebchat, preferences, logoStyle }) => (
 
 Header.propTypes = {
   closeWebchat: PropTypes.func,
+  resetWebchat: PropTypes.func,
   preferences: PropTypes.object,
   logoStyle: PropTypes.object,
 }
