@@ -64,8 +64,12 @@ const Text = ({ content, style, isMarkdown }) => {
 
   // Markdown links need to open in new window.
   // BCP: https://support.wdf.sap.corp/sap/support/message/1980408289
-  const LinkRenderer = (props) => {
-    return <a href={props.href} target='_blank' rel='noopener noreferrer'>{props.children}</a>
+  const LinkRenderer = props => {
+    return (
+      <a href={props.href} target='_blank' rel='noopener noreferrer'>
+        {props.children}
+      </a>
+    )
   }
 
   return (
