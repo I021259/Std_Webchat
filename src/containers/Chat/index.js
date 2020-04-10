@@ -18,6 +18,8 @@ import Header from 'components/Header'
 import Live from 'components/Live'
 import Input from 'components/Input'
 
+import { I18n } from 'react-redux-i18n'
+
 import './style.scss'
 
 const MAX_GET_MEMORY_TIME = 10 * 1000 // in ms
@@ -310,7 +312,8 @@ class Chat extends Component {
   resetWebchat = () => {
     console.log(this)
     this.props.removeAllMessages()
-    this.sendMessage({ type: 'text', content: 'resetdata' })
+    // this.sendMessage({ type: 'text', content: 'resetdata' })
+    this.sendMessage({ type: 'text', content: I18n.t('message.reset') }, null)
   }
 
   render () {
