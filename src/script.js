@@ -11,6 +11,8 @@ import App from 'containers/App'
 import { loadTranslations, setLocale, syncTranslationWithStore } from 'react-redux-i18n'
 import { I18n } from 'react-redux-i18n'
 import translationObjects from './i18n/translationObjects'
+import { base64, convertFW2HW, getInputUserIdCookie } from 'helpers'
+import Cookies from 'cookies-js'
 
 const browserLocale
   = (window.navigator.languages && window.navigator.languages[0])

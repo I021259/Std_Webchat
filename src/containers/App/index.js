@@ -4,9 +4,13 @@ import { connect } from 'react-redux'
 
 import Chat from 'containers/Chat'
 import Expander from 'components/Expander'
-import { setFirstMessage, removeAllMessages } from 'actions/messages'
+import { setFirstMessage, removeAllMessages, postMessage } from 'actions/messages'
 import { setCredentials, createConversation } from 'actions/conversation'
-import { storeCredentialsToLocalStorage, getCredentialsFromLocalStorage } from 'helpers'
+import {
+  storeCredentialsToLocalStorage,
+  getCredentialsFromLocalStorage,
+  getInputUserIdLocalStorage,
+} from 'helpers'
 
 import { I18n } from 'react-redux-i18n'
 
@@ -24,6 +28,7 @@ const NO_LOCALSTORAGE_MESSAGE
   setFirstMessage,
   createConversation,
   removeAllMessages,
+  postMessage,
   },
 )
 class App extends Component {
@@ -62,9 +67,33 @@ class App extends Component {
     const { channelId, token, preferences, noCredentials, onRef } = this.props
     const credentials = getCredentialsFromLocalStorage(channelId)
     const payload = { channelId, token }
-    const firstMessage
-      = preferences.welcomeMessage
-      || I18n.t('application.welcome', { headerTitle: preferences.headerTitle })
+
+    const ssoUserId = getInputUserIdLocalStorage()
+    const firstMessageContetns = ssoUserId
+      ? I18n.t('application.welcomeWithName', {
+        userId: ssoUserId,
+        headerTitle: preferences.headerTitle,
+      })
+      : I18n.t('application.welcome', { headerTitle: preferences.headerTitle })
+    const firstMessage = preferences.welcomeMessage || firstMessageContetns
+
+    const customPayload = {
+      message: {
+        attachment: {
+          type: 'text',
+          content: I18n.t('message.forLang&Intent'),
+        },
+      },
+    }
+
+    // CAI memory setting function is assigned here.
+    if (ssoUserId) {
+      console.log(`>>> ssoUserId is found with the value "${ssoUserId}" <<<`)
+      this.setCaiMemory({ ssoUserId }, true)
+      customPayload.memoryOptions = { memory: { ssoUserId }, merge: true }
+    } else {
+      console.log('>>> ssoUserId could not be found <<<')
+    }
 
     if (onRef) {
       onRef(this)
@@ -76,20 +105,27 @@ class App extends Component {
 
     if (credentials) {
       Object.assign(payload, credentials)
+      customPayload.chatId = credentials.chatId
+      this.props.postMessage(channelId, token, customPayload)
     } else {
       this.props.createConversation(channelId, token).then(({ id, chatId }) => {
         storeCredentialsToLocalStorage(chatId, id, preferences.conversationTimeToLive, channelId)
+
+        customPayload.chatId = chatId
+        this.props.postMessage(channelId, token, customPayload)
       })
+      this.props.setFirstMessage(firstMessage)
     }
 
-    /*
-    if (preferences.welcomeMessage) {
-      this.props.setFirstMessage(preferences.welcomeMessage)
-    }
-    */
-    this.props.setFirstMessage(firstMessage)
+    // The following statement is commented out, because Webchat gets all previous messages from CAI even if the browser is reloaded.
+    // So the following statement is moved to above and it is called if there is no credentials (Cookie). i.e. The very beginning of this chat.
+    // this.props.setFirstMessage(firstMessage)
 
     this.props.setCredentials(payload)
+    this.setCaiMemory({ ssoUserId }, true)
+    if (ssoUserId) {
+      this.setCaiMemory({ ssoUserId }, true)
+    }
   }
 
   componentDidUpdate (prevState) {
@@ -136,6 +172,33 @@ class App extends Component {
   }
 */
 
+  // !!! The following function can set the CAI Memory,
+  // but once the memory management code is assigned to "window.webchatMethods", it is called every times whenever the chat is sent.
+  // Therefore assigning the code to "window.webchatMethods" is not really convenient.
+  // However the primitive parameter like user ID would be possible to be set by this,
+  // and once this is set, it is not initialized even if the memory is reset later.
+  // This is because "window.webchatMethods" is always called, so it is also called after the reset message.
+  // "window.webchatMethods" is deleted when the reset button is pushed.
+  setCaiMemory = (memObj, doesMerge) => {
+    console.log(
+      `>>> "setCaiMessage is called, handed over parameters doesMerge is ${doesMerge} and memObj is `,
+      memObj,
+    )
+    window.webchatMethods = {
+      getMemory: conversationId => {
+        const memory = memObj
+        return { memory, merge: doesMerge }
+      },
+    }
+  }
+
+  // This is called by resetWebchat function of Chat, when the reset button is pushed.
+  undefineWebchatMethod = () => {
+    console.log('>>> "undefineWebchatMethod is called. window.webchatMethods is set as undefined.')
+    window.webchatMethods = undefined
+    // delete window.webchatMethods
+  }
+
   render () {
     const {
       preferences,
@@ -153,8 +216,9 @@ class App extends Component {
       getLastMessage,
       enableHistoryInput,
       defaultMessageDelay,
+      browserLocale,
     } = this.props
-    const { expanded } = this.state
+    const { expanded, ssoUserId } = this.state
 
     return (
       <div className='RecastApp CaiApp'>
@@ -194,6 +258,10 @@ class App extends Component {
           getLastMessage={getLastMessage}
           enableHistoryInput={enableHistoryInput}
           defaultMessageDelay={defaultMessageDelay}
+          setCaiMemory={this.setCaiMemory}
+          undefineWebchatMethod={this.undefineWebchatMethod}
+          ssoUserId={ssoUserId}
+          browserLocale={browserLocale}
         />
       </div>
     )
@@ -222,6 +290,10 @@ App.propTypes = {
   clearMessagesOnclose: PropTypes.bool,
   enableHistoryInput: PropTypes.bool,
   defaultMessageDelay: PropTypes.number,
+  setCaiMemory: PropTypes.func,
+  undefineWebchatMethod: PropTypes.func,
+  ssoUserId: PropTypes.string,
+  browserLocale: PropTypes.string,
 }
 
 export default App
