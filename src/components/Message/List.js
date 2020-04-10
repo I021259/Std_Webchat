@@ -19,14 +19,14 @@ const ListElement = ({ title, subtitle, imageUrl, buttons, sendMessage }) => {
 
   // https://sapjira.wdf.sap.corp/browse/SAPMLCONV-4781 - Support the pnonenumber options
   const formattedTitle = truncate(button.title, buttonTitleMaxLength)
-  const telHref
-    = button.value && button.value.indexOf('tel:') === 0 ? button.value : `tel:${button.value}`
+  const telHref = button.value && button.value.indexOf('tel:') === 0 ? button.value : `tel:${button.value}`
   let content = null
 
   switch (button.type) {
   case 'phonenumber':
     content = (
-      <a className='RecastAppListElement--button CaiAppListElement--button' href={telHref}>
+      <a
+        className='RecastAppListElement--button CaiAppListElement--button' href={telHref}>
         {formattedTitle}
       </a>
     )
@@ -35,11 +35,8 @@ const ListElement = ({ title, subtitle, imageUrl, buttons, sendMessage }) => {
     if (sanitizeUrl(button.value) !== 'about:blank') {
       content = (
         <a
-          className='RecastAppListElement--button CaiAppListElement--button'
-          href={button.value}
-          target='_blank'
-          rel='noopener noreferrer'
-        >
+          className='RecastAppListElement--button CaiAppListElement--button' href={button.value} target='_blank'
+          rel='noopener noreferrer'>
           {formattedTitle}
         </a>
       )
@@ -53,21 +50,19 @@ const ListElement = ({ title, subtitle, imageUrl, buttons, sendMessage }) => {
 
   return (
     <div className='RecastAppListElement CaiAppListElement'>
-      {imageUrl && sanitizeUrl(imageUrl) !== 'about:blank' && (
+      {imageUrl
+        && sanitizeUrl(imageUrl) !== 'about:blank' && (
         <img src={imageUrl} className='RecastAppListElement--img CaiAppListElement--img' />
       )}
 
       <div className='RecastAppListElement--container CaiAppListElement--container'>
-        <p className='RecastAppListElement--title CaiAppListElement--title'>
-          {truncate(title, titleMaxLength)}
-        </p>
-        <p className='RecastAppListElement--subtitle CaiAppListElement--subtitle'>
-          {truncate(subtitle, subTitleMaxLength)}
-        </p>
+        <p className='RecastAppListElement--title CaiAppListElement--title'>{truncate(title, titleMaxLength)}</p>
+        <p className='RecastAppListElement--subtitle CaiAppListElement--subtitle'>{truncate(subtitle, subTitleMaxLength)}</p>
 
         {button
-          && (content ? (
-            content !== 'about:blank' && content
+          && (content ? (content !== 'about:blank' && (
+            content
+          )
           ) : (
             <div
               className='RecastAppListElement--button CaiAppListElement--button'

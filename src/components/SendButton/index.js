@@ -4,8 +4,14 @@ import PropTypes from 'prop-types'
 import './style.scss'
 
 const SendButton = ({ sendMessage, preferences, value }) => (
-  <div className='RecastSendButtonContainer CaiSendButtonContainer'>
-    <div className='RecastSendButton CaiSendButton' onClick={sendMessage} disabled={!value}>
+  <div
+    className='RecastSendButtonContainer CaiSendButtonContainer'
+  >
+    <div
+      className='RecastSendButton CaiSendButton'
+      onClick={sendMessage}
+      disabled={!value}
+    >
       <svg
         style={{
           width: 23,

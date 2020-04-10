@@ -23,7 +23,8 @@ const Button = ({ button, sendMessage }) => {
   switch (button.type) {
   case 'phonenumber':
     content = (
-      <a className='RecastAppButton-Link CaiAppButton-Link' href={telHref}>
+      <a
+        className='RecastAppButton-Link CaiAppButton-Link' href={telHref}>
         {formattedTitle}
       </a>
     )
@@ -31,11 +32,8 @@ const Button = ({ button, sendMessage }) => {
   case 'web_url':
     content = (
       <a
-        className='RecastAppButton-Link CaiAppButton-Link'
-        href={value}
-        target='_blank'
-        rel='noopener noreferrer'
-      >
+        className='RecastAppButton-Link CaiAppButton-Link' href={value} target='_blank'
+        rel='noopener noreferrer'>
         {formattedTitle}
       </a>
     )

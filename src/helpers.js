@@ -1,3 +1,4 @@
+
 export const truncate = (string, length) => {
   if (string.length <= length) {
     return string
@@ -6,7 +7,7 @@ export const truncate = (string, length) => {
   return `${string.slice(0, length - 3)}...`
 }
 
-export const getCredentialCookieName = channelId => {
+export const getCredentialCookieName = (channelId) => {
   return `cai-conversation-${channelId}`
 }
 
@@ -23,7 +24,7 @@ export const storeCredentialsToLocalStorage = (chatId, conversationId, timeToLiv
   }
 }
 
-export const getCredentialsFromLocalStorage = channelId => {
+export const getCredentialsFromLocalStorage = (channelId) => {
   if (typeof window.localStorage !== 'undefined') {
     const localStorageData = localStorage.getItem(getCredentialCookieName(channelId))
 
@@ -31,8 +32,7 @@ export const getCredentialsFromLocalStorage = channelId => {
       try {
         const time = new Date().getTime()
         const localData = JSON.parse(localStorageData)
-        const secondsLeftBeforeExpires
-          = localData.expire === 0 ? 9999 : parseInt((localData.expire - time) / 1000, 10)
+        const secondsLeftBeforeExpires = localData.expire === 0 ? 9999 : parseInt((localData.expire - time) / 1000, 10)
         if (secondsLeftBeforeExpires > 0) {
           return localData.payload
         }

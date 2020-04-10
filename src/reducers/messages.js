@@ -77,27 +77,6 @@ export default handleActions(
 
       return [...state, ...[message]]
     },
-
-    ADD_MESSAGE_INFO: (state, { payload }) => {
-      // eslint-disable-next-line guard-for-in
-      for (const i in state) {
-        const messageText = state[i].attachment.content.title
-          ? state[i].attachment.content.title
-          : state[i].attachment.content
-        console.log(`${i}: ${messageText}`)
-      }
-
-      const message = {
-        ...payload,
-        displayIcon: false,
-        id: `local-${Math.random()}`,
-        participant: {
-          isBot: true,
-        },
-      }
-
-      return [...state, ...[message]]
-    },
   },
   initialState,
 )
