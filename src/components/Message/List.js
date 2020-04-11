@@ -9,7 +9,9 @@ import Button from 'components/Button'
 
 const ListElement = ({ title, subtitle, imageUrl, buttons, sendMessage }) => {
   const titleMaxLength = 25
-  const subTitleMaxLength = 50
+  // Enlarge the maxlength of subtitle
+  //  const subTitleMaxLength = 50
+  const subTitleMaxLength = 100
   const buttonTitleMaxLength = 20
 
   const button = propOr(null, 0, buttons)
