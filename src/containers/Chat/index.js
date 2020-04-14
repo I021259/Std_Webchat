@@ -9,6 +9,7 @@ import {
   postMessage,
   pollMessages,
   removeMessage,
+  removeAllMessages,
   addBotMessage,
   addUserMessage,
 } from 'actions/messages'
@@ -16,6 +17,10 @@ import {
 import Header from 'components/Header'
 import Live from 'components/Live'
 import Input from 'components/Input'
+
+import { I18n } from 'react-redux-i18n'
+// import Cookies from 'cookies-js'
+import { setInputUserIdCookie, setInputUserIdLocalStorage } from 'helpers'
 
 import './style.scss'
 
@@ -37,6 +42,7 @@ const WRONG_MEMORY_FORMAT
   postMessage,
   pollMessages,
   removeMessage,
+  removeAllMessages,
   addUserMessage,
   addBotMessage,
   },
@@ -168,6 +174,7 @@ class Chat extends Component {
       addUserMessage,
       addBotMessage,
       defaultMessageDelay,
+      setCaiMemory,
     } = this.props
     const payload = { message: { attachment }, chatId }
 
@@ -186,6 +193,35 @@ class Chat extends Component {
         attachment: { type: 'text', content: userMessage },
       }
     }
+
+    // >>> Start of user id manipulation. >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    const msgContent = attachment.content
+    const rePattern = /^[0-9a-zA-Z]*$/
+    let prevMsgContent
+
+    if (this.props.messages.length > 2) {
+      if (
+        this.props.messages[this.props.messages.length - 1].attachment.type === 'text'
+        && typeof this.props.messages[this.props.messages.length - 1].attachment.content === 'string'
+      ) {
+        prevMsgContent = this.props.messages[this.props.messages.length - 1].attachment.content
+      }
+    }
+
+    if (prevMsgContent) {
+      if (
+        prevMsgContent.indexOf(I18n.t('message.askUserID')) !== -1
+        && attachment.type === 'text'
+        && msgContent.length >= 5
+        && msgContent.length <= 10
+        && rePattern.test(msgContent)
+      ) {
+        // setInputUserIdCookie( msgContent )
+        setInputUserIdLocalStorage(msgContent, channelId)
+        setCaiMemory({ ssoUserId: msgContent }, true)
+      }
+    }
+    // <<< End of user id manipulation. <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     this.setState(
       prevState => ({ messages: concat(prevState.messages, [backendMessage]) }),
@@ -305,9 +341,17 @@ class Chat extends Component {
     this._isPolling = false
   }
 
+  resetWebchat = () => {
+    console.log(this)
+    this.props.removeAllMessages()
+    // this.sendMessage({ type: 'text', content: 'resetdata' })
+    this.sendMessage({ type: 'text', content: I18n.t('message.reset') }, null)
+  }
+
   render () {
     const {
       closeWebchat,
+      resetWebchat,
       preferences,
       showInfo,
       onClickShowInfo,
@@ -335,6 +379,7 @@ class Chat extends Component {
         ) : (
           <Header
             closeWebchat={closeWebchat}
+            resetWebchat={this.resetWebchat}
             preferences={preferences}
             key='header'
             logoStyle={logoStyle}
@@ -389,6 +434,7 @@ class Chat extends Component {
 Chat.propTypes = {
   postMessage: PropTypes.func,
   closeWebchat: PropTypes.func,
+  resetWebchat: PropTypes.func,
   pollMessages: PropTypes.func,
   chatId: PropTypes.string,
   channelId: PropTypes.string,
