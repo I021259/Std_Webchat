@@ -217,7 +217,8 @@ class Chat extends Component {
         && rePattern.test(msgContent)
       ) {
         // setInputUserIdCookie( msgContent )
-        setInputUserIdLocalStorage(msgContent, channelId)
+        //        setInputUserIdLocalStorage(msgContent, channelId)
+        setInputUserIdCookie(msgContent)
         setCaiMemory({ ssoUserId: msgContent }, true)
       }
     }
@@ -454,6 +455,7 @@ Chat.propTypes = {
   show: PropTypes.bool,
   enableHistoryInput: PropTypes.bool,
   defaultMessageDelay: PropTypes.number,
+  ssoUserId: PropTypes.string,
 }
 
 export default Chat

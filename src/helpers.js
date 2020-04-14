@@ -11,9 +11,36 @@ export const truncate = (string, length) => {
   return `${string.slice(0, length - 3)}...`
 }
 
+// Added by SAP Fukuda for Cookie handling
+export const storeCredentialsInCookie = (chatId, conversationId, timeToLive) => {
+  const payload = { chatId, conversationId }
+  Cookies.set('cai-conversation', JSON.stringify(payload), { expires: 3600 * timeToLive })
+}
+export const getCredentialsFromCookie = () => {
+  let credentials = Cookies.get('cai-conversation')
+  if (credentials) {
+    try {
+      credentials = JSON.parse(credentials)
+      return credentials
+    } catch (err) {} // eslint-disable-line no-empty
+  }
+
+  return null
+}
+
 export const getCredentialCookieName = channelId => {
   return `cai-conversation-${channelId}`
 }
+
+export const setInputUserIdCookie = userId => {
+  Cookies.set(INPUT_USER_ID, userId)
+  console.log(`>>> Cookies named ${INPUT_USER_ID} is set. <<<`)
+}
+
+export const getInputUserIdCookie = () => {
+  return Cookies.get(INPUT_USER_ID)
+}
+// end of adjustment by SAP Fukuda
 
 export const storeCredentialsToLocalStorage = (chatId, conversationId, timeToLive, channelId) => {
   const payload = { chatId, conversationId }
@@ -47,15 +74,6 @@ export const getCredentialsFromLocalStorage = channelId => {
     }
   }
   return null
-}
-
-export const setInputUserIdCookie = userId => {
-  Cookies.set(INPUT_USER_ID, userId)
-  console.log(`>>> Cookies named ${INPUT_USER_ID} is set. <<<`)
-}
-
-export const getInputUserIdCookie = () => {
-  return Cookies.get(INPUT_USER_ID)
 }
 
 export const setInputUserIdLocalStorage = (userId, channelId) => {

@@ -8,7 +8,9 @@ import { setFirstMessage, removeAllMessages, postMessage } from 'actions/message
 import { setCredentials, createConversation } from 'actions/conversation'
 import {
   storeCredentialsToLocalStorage,
-  getCredentialsFromLocalStorage,
+  //  getCredentialsFromLocalStorage,
+  storeCredentialsInCookie,
+  getCredentialsFromCookie,
   getInputUserIdLocalStorage,
 } from 'helpers'
 
@@ -64,11 +66,12 @@ class App extends Component {
   }
 
   componentDidMount () {
-    const { channelId, token, preferences, noCredentials, onRef } = this.props
-    const credentials = getCredentialsFromLocalStorage(channelId)
+    const { channelId, token, preferences, noCredentials, onRef, ssoUserId } = this.props
+    // const credentials = getCredentialsFromLocalStorage(channelId)
+    const credentials = getCredentialsFromCookie(channelId)
     const payload = { channelId, token }
 
-    const ssoUserId = getInputUserIdLocalStorage()
+    // const ssoUserId = getInputUserIdLocalStorage()
     const firstMessageContetns = ssoUserId
       ? I18n.t('application.welcomeWithName', {
         userId: ssoUserId,
@@ -122,10 +125,11 @@ class App extends Component {
     // this.props.setFirstMessage(firstMessage)
 
     this.props.setCredentials(payload)
-    this.setCaiMemory({ ssoUserId }, true)
-    if (ssoUserId) {
-      this.setCaiMemory({ ssoUserId }, true)
-    }
+    //    this.setCaiMemory({ ssoUserId }, true)
+
+    // if (ssoUserId) {
+    //  this.setCaiMemory({ ssoUserId }, true)
+    // }
   }
 
   componentDidUpdate (prevState) {
@@ -217,8 +221,9 @@ class App extends Component {
       enableHistoryInput,
       defaultMessageDelay,
       browserLocale,
+      ssoUserId,
     } = this.props
-    const { expanded, ssoUserId } = this.state
+    const { expanded } = this.state
 
     return (
       <div className='RecastApp CaiApp'>
