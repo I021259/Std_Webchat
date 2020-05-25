@@ -20,7 +20,7 @@ const Header = ({ closeWebchat, resetWebchat, preferences, logoStyle }) => (
     <div className='RecastAppHeader--title CaiAppHeader--title'>{preferences.headerTitle}</div>
 
     <div className='RecastAppHeader--btn CaiAppHeader--btn' onClick={resetWebchat}>
-      <img className='myIcon' src='https://I021259.github.io/img/myReset.png' />
+      <img className='myIcon' src='./img/myReset.png' />
     </div>
 
     <div className='RecastAppHeader--btn CaiAppHeader--btn' onClick={closeWebchat}>
